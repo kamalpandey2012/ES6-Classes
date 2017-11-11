@@ -782,8 +782,8 @@ Second the error could occur with the property of the data. Hence we will enclos
 ```
 catch(e){
 	this.errors.push(new DataError('some error ' , data);
-	return null;
 	}
+	return null;
 ```
 
 This will throw any uncaught error regarding the properties
@@ -801,7 +801,62 @@ for(let error of errors){
 This will throw vehicle not identified error as our dataset contains one 'truck' from 'tesla'
 
 ### Validating data
+Data is sent to the 'loadData(fleet)' function from the 'index.js' file. Lets assume we have to check data for valid properties like 'model' must not be 'mode'. For this we will call a function 'validData(data)' that returns 'true' or 'false' according to data, if data is invalid then function must return 'null' immediately to stop further execution but we do not have any safeguards for 'null' in our 'loadData' function hence it is vulnerable for this error. So we will use simple 'truthy' property of javascript that returns true if value passed to if is not null, undefined or 0 .Lets start writing code in 'fleet-data-service.js' and look at code for further understanding.
 
+In 'loadData' function inside drone case  
+
+```
+ if (drone) {
+            this.drones.push(drone);
+}
+```
+
+In 'loadVehicleData function
+
+```
+  let validData = this.validData(data);
+    if (!validData) return null;
+    
+```
+
+now 'validData' function
+
+```
+validData(data) {
+
+1.    let requiredFields = "license model latLong".split(" ");
+2.    let hasError = false;
+
+3.    if (data.type == "drone") requiredFields =  requiredFields.concat("base airTimeHours".split(" "));
+4.    if (data.type == "car") requiredFields = requiredFields.concat("miles make".split(" "));
+
+
+5.    for (let field of requiredFields) {
+      if (!data[field]) {
+6.       this.errors.push(new DataError(`invalid field ${field}`, data));
+        hasError = true;
+      }
+    }
+    return !hasError;
+  }
+  
+```
+
+  In part **1** of code we are storing all our 'Vehicle' class required fields in array format. We are using 'string.split(' ')' function of javascript which breaks string according to delimiter which is white space in this case. If you want (,) then you can write function as `string.split(',');` this will make array of different parts of string separated by comma (,). 
+  
+  In part **2** we are initializing a variable 'hasError' to false this variable we will return from this function. 'false' is initialized first just to justify its name meaning.
+  
+  At part **3** we are checking whether the vehicle type is 'drone' or 'car. If it's drone then it will concat the array 'requiredFields' which stores 'Vehicle' class required properties with value of 'Drone' class required fields. 
+  
+  At part **4** Similar to above
+  
+  At part **5** We are iterating over the reqiredFields array and checking whether data supplied to us contains the required properties if it does not contain the properties we are pushing the 'DataError' class object with message and data supplied to us. 
+  
+  At last we are returning the hasError inverted to the calling function. The inversion is just to justify the name of hasError
+  
+   
+    
+ 
 	  
 
 

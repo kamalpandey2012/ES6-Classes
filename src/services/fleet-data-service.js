@@ -15,11 +15,15 @@ export class FleetDataService {
       switch (data.type) {
         case "drone":
           let drone = this.loadVehicleData(data);
-          this.drones.push(drone);
+          if (drone) {
+            this.drones.push(drone);
+          }
           break;
         case "car":
           let car = this.loadVehicleData(data);
-          this.cars.push(car);
+          if (car) {
+            this.cars.push(car);
+          }
           break;
         default:
           let e = new DataError("Incorrect vehicle type to load ", data);
@@ -30,6 +34,8 @@ export class FleetDataService {
   }
 
   loadVehicleData(data) {
+    let validData = this.validData(data);
+    if (!validData) return null;
     try {
       switch (data.type) {
         case "drone":
@@ -47,7 +53,28 @@ export class FleetDataService {
       }
     } catch (e) {
       this.errors.push(new DataError("Some error occured ", data));
-      return null;
     }
+    return null;
+  }
+
+  validData(data) {
+    let commonRequiredFields = "license model latLong".split(" ");
+    let requiredFields = null;
+    let hasError = false;
+
+    if (data.type == "drone") requiredFields = "base airTimeHours".split(" ");
+    if (data.type == "car") requiredFields = "miles make".split(" ");
+
+    requiredFields = requiredFields.concat(commonRequiredFields);
+
+    console.log(requiredFields);
+
+    for (let field of requiredFields) {
+      if (!data[field]) {
+        this.errors.push(new DataError(`invalid field ${field}`, data));
+        hasError = true;
+      }
+    }
+    return !hasError;
   }
 }
