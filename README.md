@@ -927,7 +927,7 @@ for (let vehicle of vehicles) {
   }
  ```
  
- #### Filtering Data
+#### Filtering Data
  This will be our last operation in this course regarding data. Lets try to write a filter which will return data according to filter on 'model' value. Lets directly write the code
  
  in 'index.js' file 
@@ -958,4 +958,15 @@ This will display results of all the makes of vehicles containing 'a' in their m
 
 You could write many of the filtering conditions according to the application scenerio. 
 
- 	
+## 4. User interface classes
+In this module we will be creating different user interface classes to load different kind of UI elements like button, images, Title-bar, data-table, google maps etc
+
+To clear some way for this module we will be creating a new branch into our git repository this will be holding only this module code. 
+
+the branch name will be 'ui-elements'. For checking the code in this branch just commit all your current work then `git checkout ui-elements` this will change the code in your local project folder to the code in this branch. 
+
+In meanwhile we will create a folder 'ui' and in this folder we will a file lets say 'button.js', this will hold the code for button.
+
+We will be using 'material-design-light' for creating ui elements and saving some time in writing boiler plate components. So install it with npm `npm install --save material-design-lite`
+
+	
