@@ -854,16 +854,108 @@ validData(data) {
   
   At last we are returning the hasError inverted to the calling function. The inversion is just to justify the name of hasError
   
-   
-    
+### Querying and Sorting data
+
+#### Querying Data
+We will create a function that will display the search result of on basis of license. If license matches then it returns the object of the 'vehicle' else it will respond with something like no vehicle found with this license number. 
+
+We will start by creating a function 'findVehicle' inside the fleet-data-manager.js file. 
+
+function 'findVehicleByLicense(licenseNumber)'
+
+```
+findVehicleByLicense(licenseNumber){
+	let vehicles = this.drones.concat(this.cars);
+	
+	return vehicle.find(function(vehicle){
+		return vehicle.license == licenseNumber;
+	});
+	
+```
+
+It is using the `Array.find` method which iterates over the whole array object and gets out the object if the condition given in function matches the condition. Lets assume we were to sort one more condtion with get item with 'some name'. 
+
+then inside the passed function of `vehicle.find` will be
+
+```
+return (vehicle.make == 'Tesla' && vehicle.miles < 1000)
+```
+ This function will result into a vehicle that has 'make' of 'Tesla' and driven less then 1000 'miles'.
  
-	  
+ now call the above `findVehicleByLicense` in the 'index.js' file.
+ 
+ ``` javascript
+ let vehicle = fleetDataService.findVehicleByLicense('AT9900');
+ console.log(vehicle);
+ 
+ ```
+ 
+ This will give  output with object of the car having 'AT9900' as license number
+ 
+#### Sorting Data
+  
+ Sorting data is similar to querying data. Here we will get the results sorted in ascending order of 'license'. As license consist of alpha-numeric characters hence default JS sort will not work we have to write `compareFunction` to sort this data. Lets jump and write some code. Lets assume we are creating a function `getVehicleSortedByLicense()` in 'fleet-data-service.js' file. Lets call this function in 'index.js' class 
+ 
+ ``` javascript
+ 
+let vehicles = fleetDataService.getVehiclesSortedByLicense();
+for (let vehicle of vehicles) {
+  console.log(vehicle.license);
+}
+ ```
+ 
+ Then in 'fleet-data-service.js' class write the definition of function you have just called in 'index.js' file
+ 
+ ``` javascript
+ 
+  getVehiclesSortedByLicense() {
+    let vehicles = this.cars.concat(this.drones);
+    return vehicles.sort(function(vehicleA, vehicleB) {
+      let vehicleALicense = vehicleA.license.toUpperCase();
+      let vehicleBLicense = vehicleB.license.toUpperCase();
 
+      if (vehicleALicense < vehicleBLicense) {
+        return -1;
+      }
 
+      if (vehicleALicense > vehicleBLicense) {
+        return 1;
+      }
 
+      return 0;
+    });
+  }
+ ```
+ 
+ #### Filtering Data
+ This will be our last operation in this course regarding data. Lets try to write a filter which will return data according to filter on 'model' value. Lets directly write the code
+ 
+ in 'index.js' file 
+ 
+ ``` javascript
+ 
+let vehicles = fleetDataService.filterVehiclesByModel("a");
 
+for (let vehicle of vehicles) {
+  console.log(vehicle.model);
+}
+ ```
+ 
+ now create this function 'filterVehiclesByModel' inside 'fleet-data-service.js' class
+ 
+ ``` javascript
+ 
+  filterVehiclesByModel(query) {
+    let vehicles = this
+      .cars
+      .concat(this.drones);
+    return vehicles.filter((el) => el.model.toLowerCase().indexOf(query.toLowerCase()) > -1);
+  }
 
-	
+ ```
+   
+This will display results of all the makes of vehicles containing 'a' in their make name. 
 
+You could write many of the filtering conditions according to the application scenerio. 
 
-	
+ 	
